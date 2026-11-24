@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { eq } from 'drizzle-orm';
 import { db } from '@/src/db/index.ts';
 import { users } from '@/src/db/schema.ts';
-import { adminAuth } from '@/lib/firebase-admin';
 import {
   canPerformAction,
   isValidRole,
@@ -196,6 +195,7 @@ export async function getAuthenticatedUser(
         }
 
         try {
+          const { adminAuth } = await import('@/lib/firebase-admin');
           const decoded = await adminAuth.verifyIdToken(bearerToken);
           const email = decoded.email || `${decoded.uid}@users.local`;
           const user = await getOrCreateFirebaseUser(
