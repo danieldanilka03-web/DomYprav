@@ -18,6 +18,7 @@ import {
 } from './schema.ts';
 import { hashPassword } from '@/lib/auth-server';
 import { calculateSlaDeadline } from '@/lib/operations-logic';
+import { ensureTablesExist } from './init-schema.ts';
 
 let seedPromise: Promise<void> | null = null;
 
@@ -32,6 +33,7 @@ export async function ensureSeedData(): Promise<void> {
 
 async function runSeedIfNeeded(): Promise<void> {
   try {
+    await ensureTablesExist();
     const existing = await db.select({ value: count() }).from(buildings);
     if ((existing[0]?.value ?? 0) > 0) {
       return;
